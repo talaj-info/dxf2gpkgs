@@ -4,6 +4,7 @@ import pathlib
 import sys
 import warnings
 
+# dependencies
 from osgeo import ogr, osr, gdal
 from slugify import slugify
 
@@ -13,11 +14,14 @@ os.environ['DXF_ENCODING'] = "utf-8"
 
 
 in_driver = ogr.GetDriverByName("DXF")
-out_driver_memory = ogr.GetDriverByName('MEMORY')
-out_driver_gpkg = ogr.GetDriverByName('GPKG')
+out_driver_memory = ogr.GetDriverByName("MEMORY")
+out_driver_gpkg = ogr.GetDriverByName("GPKG")
+
+DEFAULT_EPSG = 23700  # Hardcoded at this point; replace manually for the desired spatial reference system.
 
 
-def dxf2gpkglayers(dxf_file, *, epsg=23700, out_dir=None, verbose=False):
+def dxf2gpkglayers(dxf_file, *, epsg=None, out_dir=None, verbose=False):
+    epsg = epsg or DEFAULT_EPSG
     spatialref = osr.SpatialReference()
     spatialref.ImportFromEPSG(epsg)
 
@@ -28,7 +32,7 @@ def dxf2gpkglayers(dxf_file, *, epsg=23700, out_dir=None, verbose=False):
         layer = feature.GetField("Layer")
         layers[layer].append(feature)
 
-    # We create a memory files to avoid excessive disk usage and slowness.
+    # We create memory files to avoid excessive disk usage and slowness.
 
     for layer, features in layers.items():
 
@@ -95,7 +99,7 @@ def main():
     if bad:
         for a in bad:
             print(f'ERROR: not DXF file: "{a}"')
-        sys.exit(2)
+        return 2
     if good:
         for p in good:
             out_dir = p.parent / f'{p.stem.replace(".", "-")}-layers'
@@ -104,11 +108,11 @@ def main():
             dxf2gpkglayers(p, out_dir=out_dir, verbose=True)
     else:
         print("ERROR: no DXF file was given")
-        sys.exit(1)
+        return 1
+    return 0
 
 
 
 
 if __name__ == "__main__":
-    main()
-    sys.exit()
+    sys.exit(main())
