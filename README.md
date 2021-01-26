@@ -9,4 +9,5 @@ Installation:
 2. Install Python dependencies: **python-slugify** and **GDAL**. As direct GDAL installation is hard with PIP, I put the necessary wheel files in the `dependencies` folder for Python versions 3.8 and 3.9. You should call `pip install mydependencywheelfile.whl` from command line with the wheel file which do match your system and Python version.
 3. Copy the contents of the `scripts` directory to `C:\scripts`.
 4. Copy the `DXF Break.lnk` shortcut to your Desktop.
-5. Now you should be able to drag and drop a DXF file to your *DXF Break* desktop shortcut; it will convert the DXF to several GPKG files. You will find the GPKG files in a subdirectory next to your DXF file.
+5. Currently the Spatial Refernce system is hardcoded to Hungarian EOV (23700). Sorry about that. You can edit the `dxf2gpkglayers.py` file to replace it with an EPSG value of your needs.
+6. Now you should be able to drag and drop a DXF file to your *DXF Break* desktop shortcut; it will convert the DXF to several GPKG files. You will find the GPKG files in a subdirectory next to your DXF file.
